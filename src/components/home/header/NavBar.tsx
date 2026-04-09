@@ -6,6 +6,7 @@ import ToggleMode from "./ToggleMode";
 import { useState } from "react";
 import { Menu, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs";
 
 const NavBar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,10 +43,19 @@ const NavBar = () => {
             <SearchInput />
             <ToggleMode />
 
-            <div className="hidden md:flex items-center gap-2">
+            <Show when="signed-in">
+              <UserButton/>
+            </Show>
+           <Show when="signed-out">
+             <div className="hidden md:flex items-center gap-2">
+              <SignInButton>
               <Button variant="outline">Login</Button>
+              </SignInButton>
+              <SignUpButton>
               <Button>Sign Up</Button>
+              </SignUpButton>
             </div>
+           </Show>
             <Button
               variant="ghost"
               size="icon"
