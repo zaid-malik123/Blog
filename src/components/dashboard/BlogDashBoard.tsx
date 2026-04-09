@@ -19,7 +19,7 @@ import RecentArticles from "./RecentArticles";
           </p>
         </div>
 
-        <Link href="#">
+        <Link href="/dashboard/articles/create">
           <Button className="gap-2">
             <PlusCircle className="h-4 w-4" />
             New Article
