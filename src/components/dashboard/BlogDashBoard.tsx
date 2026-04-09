@@ -2,6 +2,7 @@ import { FileText, MessageCircle, PlusCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
+import RecentArticles from "./RecentArticles";
 
  function BlogDashBoard() {
   return (
@@ -77,9 +78,7 @@ import Link from "next/link";
       </div>
 
       {/* Recent Articles (Static Placeholder) */}
-      <div className="text-muted-foreground">
-        Recent Articles Section
-      </div>
+      <RecentArticles/>
 
     </main>
   );
