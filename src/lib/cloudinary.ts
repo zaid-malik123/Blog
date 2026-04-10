@@ -6,23 +6,26 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+
 export const uploadOnCloudinary = async (
-  baseImageUrl: string
+  buffer: Buffer
 ): Promise<string | null> => {
-  
-  if (!baseImageUrl) return null;
 
   try {
-    const res = await cloudinary.uploader.upload(baseImageUrl);
+    return await new Promise((resolve, reject) => {
 
-    return res.secure_url;
+      cloudinary.uploader.upload_stream(
+        { folder: "articles" },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result?.secure_url || null);
+        }
+      ).end(buffer);
 
-  } catch (error: unknown) {
+    });
 
-    if (error instanceof Error) {
-      throw new Error("Cloudinary Error: " + error.message);
-    }
-
-    throw new Error("Unknown Cloudinary Error");
+  } catch (error) {
+    console.log(error);
+    return null;
   }
 };
