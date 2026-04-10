@@ -3,8 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import RecentArticles from "./RecentArticles";
+import { prisma } from "@/lib/prisma";
 
- function BlogDashBoard() {
+async function BlogDashBoard() {
+
+  const [articles, totalComments] = await Promise.all([
+  prisma.article.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      comments: true,
+      author: {
+        select: {
+          name: true,
+          email: true,
+          imageUrl: true,
+        },
+      },
+    },
+  }),
+
+  prisma.comment.count(),
+]);
+  console.log("ALL ARTICLES ARE ", articles)
+
   return (
     <main className="flex-1 p-4 md:p-8">
       
@@ -38,7 +61,7 @@ import RecentArticles from "./RecentArticles";
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12</div>
+            <div className="text-2xl font-bold">{articles.length}</div>
             <p className="text-xs text-muted-foreground mt-1">
               +5 from last month
             </p>
@@ -53,7 +76,7 @@ import RecentArticles from "./RecentArticles";
             <MessageCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">48</div>
+            <div className="text-2xl font-bold">{totalComments}</div>
             <p className="text-xs text-muted-foreground mt-1">
               12 awaiting moderation
             </p>
@@ -78,7 +101,7 @@ import RecentArticles from "./RecentArticles";
       </div>
 
       {/* Recent Articles (Static Placeholder) */}
-      <RecentArticles/>
+      <RecentArticles articles={articles}/>
 
     </main>
   );

@@ -11,8 +11,26 @@ import {
   TableRow,
 } from "../ui/table";
 import Link from "next/link";
+import type { Prisma } from "@/generated/client";
 
-const RecentArticles = () => {
+type RecentArticlesProps = {
+  articles: Prisma.ArticleGetPayload<{
+    include: {
+      comments: true;
+      author: {
+        select: {
+          name: true;
+          email: true;
+          imageUrl: true;
+        };
+      };
+    };
+  }>[];
+};
+
+
+const RecentArticles = ({articles}: {articles: RecentArticlesProps}) => {
+  
   return (
     <Card className="mb-8">
       <CardHeader>
