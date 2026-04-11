@@ -12,6 +12,8 @@ const page = async ({params}: {params: {id: string}}) => {
     }
   })
 
+  if(!article) return;
+
 
   return (
     <div>

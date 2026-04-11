@@ -13,6 +13,7 @@ import {
 } from "../ui/table";
 import Link from "next/link";
 import type { Prisma } from "@/generated/client";
+import { deleteArticle } from "@/actions/delete-article";
  
 type RecentArticlesProps = {
   articles: Prisma.ArticleGetPayload<{
@@ -94,7 +95,10 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ articleId }) => {
 
   return (
     <form
-      action={""
+      action={() =>
+        startTransition(async () => {
+          await deleteArticle(articleId);
+        })
       }
     >
       <Button disabled={isPending} variant="ghost" size="sm" type="submit">
