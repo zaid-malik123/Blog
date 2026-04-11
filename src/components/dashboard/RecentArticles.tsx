@@ -1,5 +1,6 @@
+
 "use client";
-import React from "react";
+import React, { useTransition } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import {
@@ -12,7 +13,7 @@ import {
 } from "../ui/table";
 import Link from "next/link";
 import type { Prisma } from "@/generated/client";
-
+ 
 type RecentArticlesProps = {
   articles: Prisma.ArticleGetPayload<{
     include: {
@@ -28,9 +29,7 @@ type RecentArticlesProps = {
   }>[];
 };
 
-
-const RecentArticles = ({articles}: {articles: RecentArticlesProps}) => {
-  
+const RecentArticles: React.FC<RecentArticlesProps> = ({ articles }) => {
   return (
     <Card className="mb-8">
       <CardHeader>
@@ -41,52 +40,66 @@ const RecentArticles = ({articles}: {articles: RecentArticlesProps}) => {
           </Button>
         </div>
       </CardHeader>
-
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Comments</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">Article Title</TableCell>
-              <TableCell>
-                <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                  Published
-                </span>
-              </TableCell>
-              <TableCell>12</TableCell>
-              <TableCell>Apr 8, 2026</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Link href={`/dashboard/articles/12/edit`}>
-                    <Button variant="ghost" size="sm">Edit</Button>
-                  </Link>
-                  <DeleteBtn/>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-
-        </Table>
-      </CardContent>
+      {!articles.length ? (
+        <CardContent>No articles found.</CardContent>
+      ) : (
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Title</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Comments</TableHead>
+                <TableHead>Date</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {articles.slice(0, 5).map((article) => (
+                <TableRow key={article.id}>
+                  <TableCell className="font-medium">{article.title}</TableCell>
+                  <TableCell>
+                    <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                      Published
+                    </span> 
+                  </TableCell>
+                  <TableCell>{article.comments.length}</TableCell>
+                  <TableCell>{new Date(article.createdAt).toDateString()}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Link href={`/dashboard/articles/${article.id}/edit`}>
+                        <Button variant="ghost" size="sm">Edit</Button>
+                      </Link>
+                      <DeleteButton articleId={article.id} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </CardContent>
+      )}
     </Card>
   );
 };
 
 export default RecentArticles;
 
-const DeleteBtn = () => {
+type DeleteButtonProps = {
+  articleId: string;
+};
+
+const DeleteButton: React.FC<DeleteButtonProps> = ({ articleId }) => {
+  const [isPending, startTransition] = useTransition();
+
   return (
-    <form>
-      <Button variant={"ghost"} size={"sm"} type="submit">Delete</Button>
+    <form
+      action={""
+      }
+    >
+      <Button disabled={isPending} variant="ghost" size="sm" type="submit">
+        {isPending ? "Deleting..." : "Delete"}
+      </Button>
     </form>
-  )
-}
+  );
+};
