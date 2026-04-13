@@ -31,6 +31,7 @@ export async function TopArticles() {
       {articles.slice(0,3).map((article) => (
         <>
          <Card
+         key={article.id}
         className={cn(
           "group relative overflow-hidden transition-all hover:scale-[1.02]",
           "border border-gray-200/50 dark:border-white/10",
