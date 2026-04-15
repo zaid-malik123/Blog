@@ -3,13 +3,13 @@ import React, { useActionState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { createComments } from "@/actions/create-comment";
+import { createComment } from "@/actions/create-comment";
 
 type CommentFormProps = {
     articleId:string
 }
 const CommentForm : React.FC<CommentFormProps> = ({articleId}) => {
-  const [formState, action, isPending] = useActionState(createComments.bind(null, articleId), {
+  const [formState, action, isPending] = useActionState(createComment.bind(null, articleId), {
     errors: {},
   });
   return (
